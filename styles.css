@@ -325,7 +325,8 @@ header .mascots span{
 .code-panel{
   background:#1e1e2e;
   border-radius:var(--r-md);
-  overflow:hidden;
+  overflow-x:auto;
+  overflow-y:auto;
   display:flex;
   flex-direction:column;
   box-shadow:0 10px 30px rgba(20,15,50,0.18);
