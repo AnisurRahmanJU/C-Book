@@ -1,2 +1,2 @@
-# C-book
-illustrated C Storybook for kids
+# C Book
+Illustrated C Storybook for kids
