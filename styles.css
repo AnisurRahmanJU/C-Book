@@ -330,7 +330,7 @@ header .mascots span{
   display:flex;
   flex-direction:column;
   box-shadow:0 10px 30px rgba(20,15,50,0.18);
-  height: 650px;
+  height: 700px;
 }
 .code-panel-header{
   display:flex;
