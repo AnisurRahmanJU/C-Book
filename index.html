@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello, World!</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+      <h1 class="title">Hello Worl<!DOCTYPE html>
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
@@ -216,11 +223,14 @@ header .mascots span{
 
 .chapter-grid{
   display:grid;
-  grid-template-columns:1.05fr 1fr;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);
+  grid-template-areas:"content code";
   gap:28px;
-  align-items:stretch;
+  align-items:start;
   padding:32px 36px 36px;
 }
+.chapter-grid > .story{ grid-area:content; min-width:0; }
+.chapter-grid > .code-panel{ grid-area:code; min-width:0; align-self:start; }
 
 .story{ padding-top:4px; }
 .story .badge{
@@ -506,7 +516,7 @@ footer{
    RESPONSIVE
    ============================================================ */
 @media(max-width:860px){
-  .chapter-grid{ grid-template-columns:1fr; gap:0; }
+  .chapter-grid{ grid-template-columns:1fr; grid-template-areas:"content" "code"; gap:0; }
   .chapter-grid .story{ margin-bottom:18px; }
   .chapter-grid{ padding:14px 22px 26px; }
   header{ padding:76px 20px 44px; }
@@ -1279,6 +1289,10 @@ int main() {
     printf("Notun shokti: %d\n", r1.power);
     return 0;
 }</textarea>
+      <div class="stdin-row" style="border-top:1px solid rgba(255,255,255,0.05);">
+        <label>⚠️ নোট:</label>
+        <span style="color:#ffcb77;font-size:0.78rem;">এই ব্রাউজার-ইন্টারপ্রেটার এখনো struct সরাসরি রান করতে পারে না — কোডটা পড়ে শেখার জন্য, রান বাটনে গেলে ব্যাখ্যা দেখাবে।</span>
+      </div>
       <div class="controls-row">
         <button class="btn btn-run" onclick="runCode('code17','out17')">▶ কোড রান করো</button>
         <button class="btn btn-reset" onclick="resetCode('code17')">↺ রিসেট</button>
@@ -1320,6 +1334,10 @@ int main() {
     }
     return 0;
 }</textarea>
+      <div class="stdin-row" style="border-top:1px solid rgba(255,255,255,0.05);">
+        <label>⚠️ নোট:</label>
+        <span style="color:#ffcb77;font-size:0.78rem;">এই ব্রাউজার-ইন্টারপ্রেটার এখনো enum সরাসরি রান করতে পারে না — কোডটা পড়ে শেখার জন্য, রান বাটনে গেলে ব্যাখ্যা দেখাবে।</span>
+      </div>
       <div class="controls-row">
         <button class="btn btn-run" onclick="runCode('code18','out18')">▶ কোড রান করো</button>
         <button class="btn btn-reset" onclick="resetCode('code18')">↺ রিসেট</button>
@@ -1364,6 +1382,10 @@ int main() {
     printf("Ebar box-e okkhor rakhlam: %c\n", b.letter);
     return 0;
 }</textarea>
+      <div class="stdin-row" style="border-top:1px solid rgba(255,255,255,0.05);">
+        <label>⚠️ নোট:</label>
+        <span style="color:#ffcb77;font-size:0.78rem;">এই ব্রাউজার-ইন্টারপ্রেটার এখনো union সরাসরি রান করতে পারে না — কোডটা পড়ে শেখার জন্য, রান বাটনে গেলে ব্যাখ্যা দেখাবে।</span>
+      </div>
       <div class="controls-row">
         <button class="btn btn-run" onclick="runCode('code19','out19')">▶ কোড রান করো</button>
         <button class="btn btn-reset" onclick="resetCode('code19')">↺ রিসেট</button>
@@ -1586,8 +1608,12 @@ function runCode(codeId, outId, inputId){
     } catch (e) {
       outEl.classList.add('error');
       const msg = (e && e.message) ? e.message : String(e);
-      outEl.textContent = '😅 আরে! কোডে একটা ছোট্ট গণ্ডগোল হয়েছে:\n' + msg +
-        '\n\nচিন্তা নেই, রাইয়ানও প্রথমবার ভুল করত। কোডটা একটু দেখে আবার চেষ্টা করো, অথবা "রিসেট" চেপে মূল কোডে ফিরে যাও।';
+      if (/type (struct|union|enum)\b.*is not defined/i.test(msg)) {
+        outEl.textContent = '⚠️ এই কোডটা সম্পূর্ণ সঠিক! কিন্তু আমরা যে ব্রাউজার-ভিত্তিক C ইন্টারপ্রেটার ব্যবহার করছি, সেটাতে struct/union/enum টাইপ এখনো সরাসরি রান করার সাপোর্ট নেই (এটা ওই লাইব্রেরিরই একটা সীমাবদ্ধতা, তোমার কোডের ভুল না)। কোডটা পড়ে-বুঝে শেখাই এখানে মূল লক্ষ্য।';
+      } else {
+        outEl.textContent = '😅 আরে! কোডে একটা ছোট্ট গণ্ডগোল হয়েছে:\n' + msg +
+          '\n\nচিন্তা নেই, রাইয়ানও প্রথমবার ভুল করত। কোডটা একটু দেখে আবার চেষ্টা করো, অথবা "রিসেট" চেপে মূল কোডে ফিরে যাও।';
+      }
     }
   }, 150);
 }
@@ -1619,4 +1645,8 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 </body>
+</html>d!</h1>
+      <p id="currentTime"></p>
+      <script src="script.js"></script>
+  </body>
 </html>
