@@ -17,14 +17,26 @@
       <textarea id="code17">#include <stdio.h>
 
 int main() {
-    int marbles[5] = {10, 20, 30, 40, 50};
+    int scores[6] = {45, 89, 12, 67, 90, 34};
+    int n = 6;
 
-    for (int i = 0; i < 5; i++) {
-        printf("Box number %d e marble ache: %d\n", i + 1, marbles[i]);
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (scores[j] > scores[j + 1]) {
+                int temp = scores[j];
+                scores[j] = scores[j + 1];
+                scores[j + 1] = temp;
+            }
+        }
     }
+
+    printf("Choto theke boro: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", scores[i]);
+    }
+    printf("\n");
     return 0;
 }
-
 }</textarea>
 
       <div class="stdin-row">
