@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ছোটদের সি কম্পাইলার - C Compiler Online</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<style>
+:root{
+  --bg:#0f1419; --panel:#161c24; --panel-2:#1b232d; --line:#26303c;
+  --text:#dfe6ee; --muted:#8593a3; --accent:#3fb8af; --accent-ink:#04211f;
+  --danger:#ff6b6b; --warn:#f5c26b; --ok:#7ee0a3;
+  --sans:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+:root[data-theme="light"]{
+  --bg:#eef1f5; --panel:#ffffff; --panel-2:#f4f6f9; --line:#dbe1e8;
+  --text:#1c2530; --muted:#66758a; --accent:#0f8f86; --accent-ink:#ffffff;
+  --danger:#d6303a; --warn:#a86a00; --ok:#1a8a4a;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);display:flex;flex-direction:column;overflow:hidden;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+button,select,input,textarea{font-family:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.topbar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;margin-right:6px}
+.brand .mark{width:30px;height:30px;border-radius:8px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--mono);font-weight:700}
+.brand small{color:var(--muted);font-weight:500;font-size:.75rem;display:block;margin-top:-2px}
+.spacer{flex:1}
+.tool,.select{background:var(--panel-2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:.85rem;font-weight:500;cursor:pointer;text-decoration:none}
+.tool:hover,.select:hover{border-color:var(--muted)}
+.run{background:var(--accent);color:var(--accent-ink);border:none;border-radius:8px;padding:8px 18px;font-weight:700;font-size:.9rem;cursor:pointer;display:flex;align-items:center;gap:8px}
+.run:hover{filter:brightness(1.08)} .run:disabled{opacity:.6;cursor:wait}
+.run kbd{font-family:var(--mono);font-size:.68rem;background:rgba(0,0,0,.18);padding:2px 6px;border-radius:5px;font-weight:500}
+.workspace{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,1fr);gap:1px;background:var(--line)}
+.pane{background:var(--panel);display:flex;flex-direction:column;min-width:0;min-height:0}
+.pane-head{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--panel-2);border-bottom:1px solid var(--line);font-size:.8rem;color:var(--muted);font-weight:600;flex-shrink:0}
+.pane-head .file{color:var(--text);font-family:var(--mono);font-weight:500}
+.pane-head .right{margin-left:auto;display:flex;gap:6px;align-items:center}
+.mini{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:6px;min-width:26px;height:26px;cursor:pointer;font-weight:700}
+.mini:hover{color:var(--text);border-color:var(--muted)}
+.editor-wrap{flex:1;min-height:0;position:relative}
+.CodeMirror{position:absolute;inset:0;height:auto;font-family:var(--mono);font-size:14px;line-height:1.6;background:var(--panel);color:var(--text)}
+.CodeMirror-gutters{background:var(--panel);border-right:1px solid var(--line)}
+.CodeMirror-linenumber{color:var(--muted);opacity:.7}
+.CodeMirror-cursor{border-left:2px solid var(--accent)}
+.CodeMirror-activeline-background{background:rgba(127,150,175,.09)}
+.CodeMirror-selected{background:rgba(63,184,175,.25)!important}
+.cm-s-cc .cm-keyword{color:#e5809b;font-weight:600}
+.cm-s-cc .cm-type,.cm-s-cc .cm-variable-3{color:#6cc7ff}
+.cm-s-cc .cm-def{color:#8fb8ff}
+.cm-s-cc .cm-string{color:#e8c072}
+.cm-s-cc .cm-number{color:#c69cff}
+.cm-s-cc .cm-comment{color:#6d7b8b;font-style:italic}
+.cm-s-cc .cm-meta,.cm-s-cc .cm-operator{color:#5fd0c6}
+.cm-s-cc .cm-atom,.cm-s-cc .cm-builtin{color:#7ee0a3}
+:root[data-theme="light"] .cm-s-cc .cm-keyword{color:#c0245a}
+:root[data-theme="light"] .cm-s-cc .cm-type,:root[data-theme="light"] .cm-s-cc .cm-variable-3{color:#0b6fb8}
+:root[data-theme="light"] .cm-s-cc .cm-def{color:#2a52c9}
+:root[data-theme="light"] .cm-s-cc .cm-string{color:#946200}
+:root[data-theme="light"] .cm-s-cc .cm-number{color:#7b3fd1}
+:root[data-theme="light"] .cm-s-cc .cm-comment{color:#8794a3}
+:root[data-theme="light"] .cm-s-cc .cm-meta,:root[data-theme="light"] .cm-s-cc .cm-operator{color:#0a7f76}
+.err-line{background:rgba(255,107,107,.18)}
+.side{display:grid;grid-template-rows:minmax(90px,.55fr) minmax(0,1.6fr);gap:1px;background:var(--line);min-height:0}
+textarea#stdin{flex:1;min-height:0;resize:none;border:0;outline:0;background:var(--panel);color:var(--warn);font-family:var(--mono);font-size:13px;padding:12px 14px;line-height:1.6}
+textarea#stdin::placeholder{color:var(--muted)}
+#output{flex:1;min-height:0;margin:0;padding:12px 14px;overflow:auto;background:var(--panel);font-family:var(--mono);font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+#output .err{color:var(--danger)} #output .hint{color:var(--muted)}
+.status{display:flex;align-items:center;gap:14px;padding:6px 14px;background:var(--panel-2);border-top:1px solid var(--line);font-size:.75rem;color:var(--muted);flex-shrink:0}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block;margin-right:6px}
+.dot.ok{background:var(--ok)} .dot.bad{background:var(--danger)} .dot.run{background:var(--warn)}
+.note{font-size:.72rem;color:var(--muted);padding:6px 14px;border-top:1px solid var(--line);background:var(--panel-2);flex-shrink:0}
+.note code{font-family:var(--mono)}
+@media(max-width:860px){
+  body{overflow:auto}
+  .workspace{grid-template-columns:1fr;flex:none}
+  .pane.editor{height:60vh}
+  .side{height:70vh}
+  .brand small{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><div class="mark">C</div><div>C Compiler<small>Write, run and test C in your browser</small></div></div>
+  <select id="samples" class="select" aria-label="Load an example">
+    <option value="">Examples…</option>
+    <option value="hello">Hello, World</option>
+    <option value="input">Read input (scanf)</option>
+    <option value="sort">Bubble sort</option>
+    <option value="fact">Recursion: factorial</option>
+    <option value="prime">Prime numbers</option>
+    <option value="string">Strings</option>
+  </select>
+  <div class="spacer"></div>
+  <a class="tool" href="index.html">← Book</a>
+  <button class="tool" id="open">Open .c</button>
+  <button class="tool" id="save">Download</button>
+  <button class="tool" id="theme" aria-label="Toggle theme">Light</button>
+  <button class="run" id="run">▶ Run <kbd>Ctrl+Enter</kbd></button>
+  <input type="file" id="file" accept=".c,.h,.txt" hidden>
+</div>
+
+<div class="workspace">
+  <section class="pane editor">
+    <div class="pane-head"><span class="file">main.c</span>
+      <span class="right"><button class="mini" id="fdec" aria-label="Smaller font">A−</button><button class="mini" id="finc" aria-label="Larger font">A+</button></span>
+    </div>
+    <div class="editor-wrap"><textarea id="code"></textarea></div>
+  </section>
+
+  <div class="side">
+    <section class="pane">
+      <div class="pane-head">Input (stdin)</div>
+      <textarea id="stdin" placeholder="Type program input here (one value per line or separated by spaces)." spellcheck="false"></textarea>
+    </section>
+    <section class="pane">
+      <div class="pane-head">Output <span class="right"><button class="mini" id="clear" aria-label="Clear output" title="Clear">×</button></span></div>
+      <pre id="output" aria-live="polite"><span class="hint">Press Run to compile and execute your program.</span></pre>
+      <div class="status"><span><i class="dot" id="dot"></i><span id="state">Ready</span></span><span id="time"></span></div>
+      <div class="note">Runs in-browser with an interpreter. Supports C basics (<code>stdio, stdlib, string, math, ctype</code>); <code>struct</code>, <code>union</code>, <code>enum</code> and file I/O are not supported.</div>
+    </section>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+<!-- Same JSCPP bundle that index.html uses (extract it into jscpp.js) -->
+<script src="jscpp.js"></script>
+<script>window.JSCPP||document.write('<script src="https://cdn.jsdelivr.net/npm/JSCPP@2.0.9/dist/JSCPP.es5.min.js"><\/script>')</script>
+<script>
+(function(){
+"use strict";
+var SAMPLES={
+hello:'#include <stdio.h>\n\nint main() {\n    printf("Hello, World!\\n");\n    return 0;\n}\n',
+input:'#include <stdio.h>\n\nint main() {\n    int a, b;\n    printf("Enter two numbers: ");\n    scanf("%d %d", &a, &b);\n    printf("Sum = %d\\n", a + b);\n    printf("Product = %d\\n", a * b);\n    return 0;\n}\n',
+sort:'#include <stdio.h>\n\nint main() {\n    int a[6] = {45, 89, 12, 67, 90, 34};\n    int n = 6;\n    for (int i = 0; i < n - 1; i++) {\n        for (int j = 0; j < n - i - 1; j++) {\n            if (a[j] > a[j + 1]) {\n                int t = a[j];\n                a[j] = a[j + 1];\n                a[j + 1] = t;\n            }\n        }\n    }\n    printf("Sorted: ");\n    for (int i = 0; i < n; i++) printf("%d ", a[i]);\n    printf("\\n");\n    return 0;\n}\n',
+fact:'#include <stdio.h>\n\nlong factorial(int n) {\n    if (n <= 1) return 1;\n    return n * factorial(n - 1);\n}\n\nint main() {\n    for (int i = 1; i <= 10; i++)\n        printf("%2d! = %ld\\n", i, factorial(i));\n    return 0;\n}\n',
+prime:'#include <stdio.h>\n\nint isPrime(int n) {\n    if (n < 2) return 0;\n    for (int i = 2; i * i <= n; i++)\n        if (n % i == 0) return 0;\n    return 1;\n}\n\nint main() {\n    printf("Primes up to 50:\\n");\n    for (int i = 2; i <= 50; i++)\n        if (isPrime(i)) printf("%d ", i);\n    printf("\\n");\n    return 0;\n}\n',
+string:'#include <stdio.h>\n#include <string.h>\n\nint main() {\n    char s[50] = "compiler";\n    int len = strlen(s);\n    printf("Word: %s (length %d)\\n", s, len);\n    printf("Reversed: ");\n    for (int i = len - 1; i >= 0; i--) printf("%c", s[i]);\n    printf("\\n");\n    return 0;\n}\n'
+};
+
+var $=function(id){return document.getElementById(id)};
+var out=$("output"), dot=$("dot"), stateEl=$("state"), timeEl=$("time"), runBtn=$("run");
+var errMark=null, fontSize=14;
+
+var saved=null;
+try{saved=localStorage.getItem("cc:code")}catch(e){}
+$("code").value=saved||SAMPLES.hello;
+
+var ed=CodeMirror.fromTextArea($("code"),{
+  mode:"text/x-csrc", theme:"cc", lineNumbers:true, indentUnit:4, tabSize:4, indentWithTabs:false,
+  matchBrackets:true, autoCloseBrackets:true, styleActiveLine:true,
+  extraKeys:{
+    "Ctrl-Enter":run, "Cmd-Enter":run,
+    Tab:function(cm){ if(cm.somethingSelected()) cm.indentSelection("add"); else cm.replaceSelection("    ","end"); }
+  }
+});
+ed.on("change",function(){
+  clearErr();
+  try{localStorage.setItem("cc:code",ed.getValue())}catch(e){}
+});
+
+function setState(kind,text){ dot.className="dot "+kind; stateEl.textContent=text; }
+function clearErr(){ if(errMark!==null){ ed.removeLineClass(errMark,"background","err-line"); errMark=null; } }
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+
+function run(){
+  if(typeof JSCPP==="undefined"){
+    out.innerHTML='<span class="err">The C interpreter failed to load. Make sure jscpp.js is next to compiler.html, or check your internet connection.</span>';
+    return;
+  }
+  clearErr();
+  runBtn.disabled=true; setState("run","Running…");
+  out.textContent=""; timeEl.textContent="";
+  var buf=[];
+  var t0=performance.now();
+  // stdin: normalise line endings and always end with a newline (same as the book page)
+  var input=$("stdin").value.replace(/\r\n?/g,"\n")+"\n";
+  setTimeout(function(){
+    var code=null, failed=false, msg="";
+    try{
+      code=JSCPP.run(ed.getValue(), input, {
+        stdio:{ write:function(s){ buf.push(s); } },
+        unsigned_overflow:"warn",
+        maxTimeout:8000
+      });
+    }catch(e){ failed=true; msg=String(e&&e.message||e); }
+    var ms=(performance.now()-t0).toFixed(0);
+    var html=esc(buf.join(""));
+    if(failed){
+      var m=msg.match(/(?:^|\n)\s*line\s+(\d+)|^(\d+):(\d+)/i);
+      var ln=m?parseInt(m[1]||m[2],10):null;
+      if(ln && ln<=ed.lineCount()){ errMark=ln-1; ed.addLineClass(errMark,"background","err-line"); ed.scrollIntoView({line:errMark,ch:0},80); }
+      msg=msg.replace(/^ERROR: /,"");
+      if(/type (struct|union|enum)\b.*is not defined/i.test(msg)){
+        msg="struct / union / enum are not supported by this in-browser interpreter (your code may still be correct).";
+      }
+      html+=(html&&!/\n$/.test(html)?"\n":"")+'<span class="err">'+esc(msg)+'</span>';
+      setState("bad","Failed");
+    }else{
+      if(!html) html='<span class="hint">(program produced no output)</span>';
+      html+='\n<span class="hint">— exited with code '+(code==null?0:code)+' —</span>';
+      setState("ok","Finished");
+    }
+    out.innerHTML=html;
+    timeEl.textContent=ms+" ms";
+    runBtn.disabled=false;
+  },30);
+}
+
+runBtn.addEventListener("click",run);
+$("clear").addEventListener("click",function(){ out.innerHTML='<span class="hint">Output cleared.</span>'; setState("","Ready"); timeEl.textContent=""; clearErr(); });
+$("samples").addEventListener("change",function(){
+  var k=this.value; if(!k) return;
+  ed.setValue(SAMPLES[k]);
+  $("stdin").value = k==="input" ? "12 30" : "";
+  this.value="";
+});
+$("save").addEventListener("click",function(){
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([ed.getValue()],{type:"text/x-csrc"}));
+  a.download="main.c"; document.body.appendChild(a); a.click(); a.remove();
+});
+$("open").addEventListener("click",function(){ $("file").click(); });
+$("file").addEventListener("change",function(){
+  var f=this.files[0]; if(!f) return;
+  var r=new FileReader(); r.onload=function(){ ed.setValue(String(r.result)); }; r.readAsText(f); this.value="";
+});
+function setFont(n){ fontSize=Math.max(11,Math.min(24,n)); document.querySelector(".CodeMirror").style.fontSize=fontSize+"px"; ed.refresh(); }
+$("finc").addEventListener("click",function(){ setFont(fontSize+1); });
+$("fdec").addEventListener("click",function(){ setFont(fontSize-1); });
+
+var root=document.documentElement, themeBtn=$("theme");
+function applyTheme(t){ root.setAttribute("data-theme",t); themeBtn.textContent=t==="dark"?"Light":"Dark"; try{localStorage.setItem("cc:theme",t)}catch(e){} }
+var th=null; try{th=localStorage.getItem("cc:theme")}catch(e){}
+applyTheme(th||(window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"));
+themeBtn.addEventListener("click",function(){ applyTheme(root.getAttribute("data-theme")==="dark"?"light":"dark"); });
+
+window.addEventListener("load",function(){ ed.refresh(); });
+})();
+</script>
+</body>
+</html>
