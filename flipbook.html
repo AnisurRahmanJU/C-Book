@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="bn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>ছোটদের সি বুক - কোডিংয়ের একটি দিন (Flipbook)</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:radial-gradient(ellipse at 50% 40%,#3b3470,#14121f 75%);font-family:'Hind Siliguri','Noto Sans Bengali','Nirmala UI',sans-serif;color:#14121f;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#app{position:absolute;inset:0;overflow:hidden;touch-action:pan-y}#app.zoomed{touch-action:none}
+#stage{position:absolute;left:50%;top:calc(50% - 30px);width:1040px;height:740px;margin:-370px 0 0 -520px}
+#book{position:absolute;inset:0;perspective:3000px;transition:transform .8s cubic-bezier(.5,.1,.3,1);filter:drop-shadow(0 25px 35px rgba(0,0,0,.55))}
+.leaf{position:absolute;left:50%;top:0;width:50%;height:100%;transform-origin:left center;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.5,.1,.3,1),z-index 0s .4s}
+.leaf.flipped{transform:rotateY(-180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.face.back{transform:rotateY(180deg)}
+#src{position:absolute;left:-9999px;top:0;visibility:hidden}
+#print{display:none}
+.page{width:520px;height:740px;position:relative;overflow:hidden;display:flex;flex-direction:column;padding:34px 32px 18px;background:#fffdf8}
+.page::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(to right,rgba(0,0,0,.22),rgba(0,0,0,.04) 6%,transparent 14%)}
+.page.odd::after{background:linear-gradient(to left,rgba(0,0,0,.22),rgba(0,0,0,.04) 6%,transparent 14%)}
+.page.paper{border-top:6px solid var(--ac,#6d5ef7)}
+.page.night{background:#1c1a2e;color:#e4defd;border-top:6px solid #a78bfa}
+.head{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+.emo{flex:none;width:72px;height:72px;border-radius:50%;background:var(--bg,#f0eeff);display:grid;place-items:center;font-size:38px}
+.night .emo{background:rgba(167,139,250,.16)}
+.badge{display:inline-block;font-size:12px;font-weight:600;padding:2px 10px;border-radius:99px;background:var(--bg,#f0eeff);color:var(--ac,#6d5ef7);margin-bottom:4px}
+.night .badge{background:rgba(167,139,250,.18);color:#e4defd}
+h2{font-family:'Baloo Da 2','Hind Siliguri',sans-serif;font-size:21px;line-height:1.25;color:#14121f}
+.night h2{color:#f1edff}
+.fit{flex:1;min-height:0;overflow:hidden;font-size:14.5px;line-height:1.7}
+.body p{margin-bottom:.7em;color:#3a3654}
+.night .body p{color:#c9c3e6}
+code{font-family:'Fira Code',monospace;font-size:.86em;background:#efecff;color:#4d3fd6;padding:1px 5px;border-radius:5px}
+.night code{background:rgba(167,139,250,.18);color:#d9d0ff}
+.learn-box{background:var(--bg,#f0eeff);border:1px solid rgba(109,94,247,.18);border-radius:14px;padding:10px 14px;margin-top:.6em;line-height:1.55}
+.night .learn-box{background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.25)}
+.learn-box b{color:var(--ac,#4d3fd6)}.night .learn-box b{color:#c9beff}
+.learn-box ul{margin:4px 0 0 20px}.learn-box li{margin:2px 0}
+.body a{color:#4d3fd6}
+.foot{flex:none;display:flex;justify-content:space-between;font-size:12px;color:#8b87a8;padding-top:8px;border-top:1px dashed rgba(139,135,168,.4);margin-top:8px}
+.win{flex:none;display:flex;align-items:center;gap:10px;background:#2b2748;border-radius:12px 12px 0 0;padding:10px 14px}
+.dots{display:flex;gap:6px}.dots span{width:11px;height:11px;border-radius:50%;background:#ff5f57}.dots span:nth-child(2){background:#febc2e}.dots span:nth-child(3){background:#28c840}
+.fn{font-family:'Fira Code',monospace;font-size:13px;color:#cfc9ee}
+.codebox{background:#1e1b33;border-radius:0 0 12px 12px;padding:16px 16px;font-size:13.5px;line-height:1.6;flex:none;height:560px}
+.codebox pre{font-family:'Fira Code',monospace;color:#e8e4ff;white-space:pre-wrap;word-break:break-word;tab-size:4}
+.codebox .c{color:#8b87a8;font-style:italic}.codebox .s{color:#6ee7b7}.codebox .p{color:#ff8fa3}.codebox .k{color:#c4b5fd;font-weight:500}.codebox .n{color:#ffb37a}
+.tip{flex:none;margin-top:12px;font-size:13.5px;padding:8px 12px;border-radius:10px;background:var(--bg,#f0eeff);color:#3a3654}
+.night .tip{background:rgba(167,139,250,.12);color:#c9c3e6}
+.toc{display:flex;flex-direction:column;gap:2px;font-size:14px;line-height:1.3}
+.toc a{display:flex;align-items:baseline;gap:8px;padding:4.5px 6px;border-radius:8px;cursor:pointer;color:#3a3654}
+.toc a:hover{background:#fff1e0}
+.toc .t{flex:none;width:78px;font-size:11.5px;color:#ff7a59;font-weight:600}
+.toc i{flex:1;border-bottom:1px dotted #b9b4d3;transform:translateY(-3px)}
+.toc .pg{color:#8b87a8;font-size:13px}
+.cover{background:linear-gradient(165deg,#ff9f43 0%,#ff7a59 30%,#8b5cf6 68%,#2a2050 100%);color:#fff;align-items:center;justify-content:center;text-align:center;border-radius:0 10px 10px 0;box-shadow:inset 8px 0 14px rgba(0,0,0,.25)}
+.cover .sun{font-size:84px;margin-bottom:14px}.eyebrow{font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;opacity:.9;margin-bottom:18px}
+.cover h1,.back h1{font-family:'Baloo Da 2','Hind Siliguri',sans-serif;font-size:50px;line-height:1.15;text-shadow:0 3px 14px rgba(0,0,0,.3)}
+.cover .h1b{font-size:32px;opacity:.95;margin-top:4px}
+.mas{font-size:42px;margin:34px 0 26px;letter-spacing:8px}.by{font-size:13.5px;opacity:.85;margin-top:8px}
+.back{background:linear-gradient(170deg,#2a2050,#14121f);color:#e4defd;align-items:center;justify-content:center;text-align:center;border-radius:10px 0 0 10px}
+.back .sun{font-size:80px;margin-bottom:10px}
+.cert{background:#fffdf8;justify-content:center;padding:44px}
+.certbox{border:5px double #ff7a59;border-radius:20px;padding:56px 26px;text-align:center;background:linear-gradient(#fff8ef,#fff)}
+.ct{font-family:'Baloo Da 2',sans-serif;font-size:30px;font-weight:800}.cn{font-family:'Baloo Da 2',sans-serif;font-size:34px;color:#ff7a59;margin:20px 0;font-weight:800}
+.cs{font-size:16px;color:#4b4766;line-height:1.7}.stars{font-size:30px;margin-top:36px;letter-spacing:6px}
+#bar{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:rgba(20,18,31,.78);backdrop-filter:blur(8px);padding:8px 12px;border-radius:99px;z-index:9999;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+#bar button{border:0;background:#6d5ef7;color:#fff;font:600 14px 'Hind Siliguri',sans-serif;padding:7px 14px;border-radius:99px;cursor:pointer}
+#bar button:hover{background:#8b7dff}#bar #pdf{background:#ff7a59}
+#lbl{color:#e4defd;font-size:13.5px;min-width:96px;text-align:center}
+#bar{flex-wrap:wrap;justify-content:center;max-width:96vw;border-radius:22px}
+#bar .sep{width:1px;height:20px;background:rgba(228,222,253,.3)}
+#bar #zin,#bar #zout,#bar #zreset{background:#2b2748;padding:7px 11px}
+#bar #zin:hover,#bar #zout:hover,#bar #zreset:hover{background:#3d3768}
+#zl{color:#e4defd;font-size:13px;min-width:44px;text-align:center}
+#app.zoomed{cursor:grab}#app.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
+#stage{transform-origin:50% 50%}
+@media(max-width:560px){#bar{gap:5px;padding:7px 9px}#bar button{padding:6px 10px;font-size:13px}#lbl{min-width:70px;font-size:12.5px}}
+@media print{
+ @page{size:520px 740px;margin:0}
+ html,body{height:auto;overflow:visible;background:#fff}
+ #app,#bar,#src{display:none!important}
+ #print{display:block}
+ #print .page{break-after:page;page-break-after:always;border-radius:0}
+ .page::after{display:none}
+}
+
+
+/* learn-box: all text black on every page */
+.learn-box,.learn-box b,.learn-box li,.learn-box ul,.learn-box code,.night .learn-box,.night .learn-box b,.night .learn-box code,.night .body .learn-box li{color:#000!important}
+.learn-box code{background:rgba(0,0,0,.08)!important}
+.night .learn-box{background:#f1edff!important;border-color:rgba(109,94,247,.3)!important}
+</style></head><body>
+<div id="app"><div id="stage"><div id="book"></div></div></div>
+<div id="bar"><button id="prev" title="আগের পাতা">◀</button><span id="lbl"></span><button id="next" title="পরের পাতা">▶</button><button id="toc">☰ সূচি</button><button id="pdf">⬇ PDF</button><span class="sep"></span><button id="zout" title="ছোট করো">−</button><span id="zl">১০০%</span><button id="zin" title="বড় করো">＋</button><button id="zreset" title="রিসেট">⟲</button></div>
+<div id="src">
+<div class="page even cover" style=""><div class="sun">🌅</div><div class="eyebrow">Bangla Illustrated Coding Storybook</div><h1>ছোটদের সি বুক</h1><h1 class="h1b">কোডিংয়ের একটি দিন</h1><div class="mas">🧒🏽 🐱 🧙🏽‍♂️ 💻</div><div class="by">Developer: Md. Anisur Rahman</div></div>
+<div class="page odd paper" style="--ac:#6d5ef7"><div class="head"><div class="emo" style="--bg:#f0eeff">📖</div><div><div class="badge">ভূমিকা</div><h2>বইয়ের কথা</h2></div></div><div class="fit body"><p>রাইয়ান, তার বিড়াল মিনি আর কোডিং-দাদুর সাথে ঘুরে আসো সকাল থেকে রাত পর্যন্ত এক মজার দিনে — যেখানে প্রতিটা মুহূর্ত C প্রোগ্রামিংয়ের একটা নতুন গল্প। নিচের কোড বক্সে নিজে হাতে কোড বদলে "কোড রান করো" চেপে দেখো কী হয়!</p></div><div class="foot"><span>ভূমিকা</span><span>১</span></div></div>
+<div class="page even paper" style="--ac:#ff9f43"><div class="head"><div class="emo" style="--bg:#fff6ec">🗓️</div><div><div class="badge">সূচিপত্র</div><h2>দিনের সূচিপত্র</h2></div></div><div class="fit toc"><a data-go="3"><span class="t">ভোর ৬:০০</span><span class="ti">হ্যালো, পৃথিবী!</span><i></i><span class="pg">৩</span></a><a data-go="5"><span class="t">ভোর ৬:৩০</span><span class="ti">ডেটা টাইপ ও ভেরিয়েবল</span><i></i><span class="pg">৫</span></a><a data-go="7"><span class="t">সকাল ৭:০০</span><span class="ti">অপারেটর</span><i></i><span class="pg">৭</span></a><a data-go="9"><span class="t">সকাল ৮:০০</span><span class="ti">ইনপুট নেওয়া (scanf)</span><i></i><span class="pg">৯</span></a><a data-go="11"><span class="t">সকাল ৯:০০</span><span class="ti">if-else শর্ত</span><i></i><span class="pg">১১</span></a><a data-go="13"><span class="t">সকাল ১০:০০</span><span class="ti">switch-case</span><i></i><span class="pg">১৩</span></a><a data-go="15"><span class="t">সকাল ১১:০০</span><span class="ti">for লুপ</span><i></i><span class="pg">১৫</span></a><a data-go="17"><span class="t">দুপুর ১২:০০</span><span class="ti">while লুপ</span><i></i><span class="pg">১৭</span></a><a data-go="19"><span class="t">দুপুর ১:০০</span><span class="ti">do-while লুপ</span><i></i><span class="pg">১৯</span></a><a data-go="21"><span class="t">দুপুর ২:০০</span><span class="ti">break ও continue</span><i></i><span class="pg">২১</span></a><a data-go="23"><span class="t">দুপুর ৩:০০</span><span class="ti">অ্যারে</span><i></i><span class="pg">২৩</span></a><a data-go="25"><span class="t">বিকেল ৪:০০</span><span class="ti">২ডি অ্যারে</span><i></i><span class="pg">২৫</span></a><a data-go="27"><span class="t">বিকেল ৪:৩০</span><span class="ti">স্ট্রিং</span><i></i><span class="pg">২৭</span></a><a data-go="29"><span class="t">বিকেল ৫:০০</span><span class="ti">ফাংশন</span><i></i><span class="pg">২৯</span></a><a data-go="31"><span class="t">বিকেল ৫:৩০</span><span class="ti">রিকার্সন</span><i></i><span class="pg">৩১</span></a><a data-go="33"><span class="t">সন্ধা ৬:০০</span><span class="ti">পয়েন্টার</span><i></i><span class="pg">৩৩</span></a><a data-go="35"><span class="t">সন্ধা ৬:৩০</span><span class="ti">স্ট্রাকচার</span><i></i><span class="pg">৩৫</span></a><a data-go="37"><span class="t">সন্ধা ৭:০০</span><span class="ti">এনাম</span><i></i><span class="pg">৩৭</span></a><a data-go="39"><span class="t">রাত ৮:০০</span><span class="ti">ইউনিয়ন</span><i></i><span class="pg">৩৯</span></a><a data-go="41"><span class="t">রাত ৯:০০</span><span class="ti">ম্যাক্রো</span><i></i><span class="pg">৪১</span></a><a data-go="43"><span class="t">রাত ১০:০০</span><span class="ti">মিনি প্রজেক্ট: সর্টিং</span><i></i><span class="pg">৪৩</span></a><a data-go="45"><span class="t">রাত</span><span class="ti">সমাপ্তি ও সার্টিফিকেট</span><i></i><span class="pg">৪৫</span></a></div><div class="foot"><span>সূচিপত্র</span><span>২</span></div></div>
+<div class="page odd paper" style="--ac:#ff9f43;--bg:#fff6ec"><div class="head"><div class="emo">🌅</div><div><div class="badge">পর্ব ১ · শুরুর কথা</div><h2>হ্যালো, পৃথিবী! (Hello World & Comments)</h2></div></div><div class="fit body">
+      <p>ভোর ছয়টায় রাইয়ানের ঘড়ি বেজে উঠল "টিরিং টিরিং"! ঘুম থেকে উঠেই সে দেখল তার বিছানার পাশে বসে আছেন কোডিং-দাদু, হাতে একটা চকচকে ল্যাপটপ। দাদু হাসতে হাসতে বললেন, "আজ থেকে আমরা কম্পিউটারের সাথে কথা বলা শিখব, ওর নাম C ভাষা!"</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"প্রতিটা C প্রোগ্রাম শুরু হয় main() নামের একটা ঘর থেকে। আর printf() হলো জাদুর চোঙা, যা দিয়ে কম্পিউটার আমাদের কথা বলে!"</b></p>
+      <p>রাইয়ান প্রথম যে লাইন লিখল, সেটা ছিল তার নিজের নাম দিয়ে একটা শুভেচ্ছাবার্তা। দাদু আরেকটা জিনিস দেখালেন — <code>//</code> চিহ্ন দিয়ে লেখা কমেন্ট, যা কম্পিউটার একদমই পড়ে না, শুধু মানুষকে বোঝানোর জন্য লেখা হয়, ঠিক যেমন বইয়ের মার্জিনে নোট লেখা হয়।</p>
+      
+    </div><div class="foot"><span>🕒 ভোর ৬:০০</span><span>৩</span></div></div>
+<div class="page even paper" style="--ac:#ff9f43;--bg:#fff6ec"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">hello.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">int</span> main() {
+    <span class="c">// eita ekta comment, computer eta pore na</span>
+    printf(<span class="s">&quot;Suprovat Prithibi! Ami Rayan!\n&quot;</span>);
+    printf(<span class="s">&quot;Aj ami C programming shikhbo.\n&quot;</span>);
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ১</span><span>৪</span></div></div>
+<div class="page odd paper" style="--ac:#ff9f43;--bg:#fff6ec"><div class="head"><div class="emo">📦</div><div><div class="badge">পর্ব ২ · ডেটা টাইপ</div><h2>মেমোরির বাক্স ও ডেটা টাইপ (Data Types & Variables)</h2></div></div><div class="fit body">
+      <p>নাস্তার টেবিলে রাইয়ান হিসেব করছিল — তার বয়স, পকেটের জমানো টাকা, আর নামের প্রথম অক্ষর। মিনি বিড়ালটা লাফিয়ে টেবিলে উঠে "ম্যাও" করে জিজ্ঞেস করল যেন, "এগুলো তুমি মনে রাখো কীভাবে?"</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"কম্পিউটারের মেমোরিতে আলাদা আলাদা বাক্স থাকে। পূর্ণসংখ্যার জন্য int, দশমিক সংখ্যার জন্য float, আর একটামাত্র অক্ষরের জন্য char বাক্স ব্যবহার করি।"</b></p>
+      <p>রাইয়ান তখন তিনটে বাক্সে তিনটে জিনিস ভরে রাখল — যেন মেমোরি একটা সুন্দর সাজানো আলমারি, যেখানে প্রতিটা তাকে কী থাকবে তা আগে থেকেই ঠিক করা থাকে।</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li><code>int</code>, <code>float</code>, <code>char</code> ডেটা টাইপ</li>
+          <li>ভেরিয়েবল ঘোষণা ও মান বসানো</li>
+          <li><code>%d</code>, <code>%f</code>, <code>%c</code> ফরম্যাট স্পেসিফায়ার</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 ভোর ৬:৩০</span><span>৫</span></div></div>
+<div class="page even paper" style="--ac:#ff9f43;--bg:#fff6ec"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">datatypes.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">int</span> main() {
+    <span class="k">int</span> boyosh = <span class="n">10</span>;
+    <span class="k">float</span> pocket_money = <span class="n">55.50</span>;
+    <span class="k">char</span> first_letter = &#x27;R&#x27;;
+
+    printf(<span class="s">&quot;Rayan-er boyosh: %d bochor\n&quot;</span>, boyosh);
+    printf(<span class="s">&quot;Pocket money: %.2f taka\n&quot;</span>, pocket_money);
+    printf(<span class="s">&quot;Namer prothom okkhor: %c\n&quot;</span>, first_letter);
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ২</span><span>৬</span></div></div>
+<div class="page odd paper" style="--ac:#3d94e6;--bg:#eef6ff"><div class="head"><div class="emo">🍎</div><div><div class="badge">পর্ব ৩ · গণনা</div><h2>আপেল ভাগাভাগি ও অপারেটর (Operators)</h2></div></div><div class="fit body">
+      <p>স্কুলে যাওয়ার পথে রাইয়ানের ব্যাগে ছিল ৩টা আপেল, বন্ধু তাকে দিল আরও ৪টা। "মোট কতগুলো হলো?" — এই প্রশ্নের উত্তর দিতে কম্পিউটার ব্যবহার করে <code>+</code> চিহ্ন, যাকে বলে অপারেটর।</p>
+      <p>দাদু দেখালেন যে শুধু যোগ নয়, বিয়োগ (<code>-</code>), গুণ (<code>*</code>), ভাগ (<code>/</code>) — সবকিছুরই নিজস্ব চিহ্ন আছে, আর <code>&gt;</code> বা <code>&lt;</code> দিয়ে দুটো সংখ্যা তুলনাও করা যায়, যেমন কে বেশি লম্বা তা বের করার মতো!</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li>গাণিতিক অপারেটর: <code>+ - * /</code></li>
+          <li>তুলনামূলক অপারেটর: <code>&gt; &lt; ==</code></li>
+          <li>ফলাফলকে নতুন ভেরিয়েবলে রাখা</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 সকাল ৭:০০</span><span>৭</span></div></div>
+<div class="page even paper" style="--ac:#3d94e6;--bg:#eef6ff"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">operators.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">int</span> main() {
+    <span class="k">int</span> amar_apel = <span class="n">3</span>;
+    <span class="k">int</span> bondhur_apel = <span class="n">4</span>;
+    <span class="k">int</span> total = amar_apel + bondhur_apel;
+    <span class="k">int</span> parthokko = bondhur_apel - amar_apel;
+    <span class="k">int</span> gunfol = amar_apel * bondhur_apel;
+
+    printf(<span class="s">&quot;Total apel: %d\n&quot;</span>, total);
+    printf(<span class="s">&quot;Parthokko: %d\n&quot;</span>, parthokko);
+    printf(<span class="s">&quot;Gunfol: %d\n&quot;</span>, gunfol);
+
+    <span class="k">if</span> (total &gt; <span class="n">5</span>) {
+        printf(<span class="s">&quot;Onek apel hoye geche!\n&quot;</span>);
+    }
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ৩</span><span>৮</span></div></div>
+<div class="page odd paper" style="--ac:#3d94e6;--bg:#eef6ff"><div class="head"><div class="emo">📥</div><div><div class="badge">পর্ব ৪ · কথোপকথন</div><h2>ম্যাজিক বাক্স ও ইনপুট নেওয়া (scanf)</h2></div></div><div class="fit body">
+      <p>ক্লাসে স্যার একটা মজার খেলা খেলালেন — সবাইকে একটা সংখ্যা লিখতে বললেন, আর কম্পিউটার সেটা "শুনে" তার দ্বিগুণ বলে দেবে! রাইয়ান অবাক হয়ে জিজ্ঞেস করল, "কম্পিউটার কীভাবে আমার লেখা 'শোনে'?"</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"scanf() হলো কম্পিউটারের কান। এটা ইউজারের টাইপ করা মান তুলে নিয়ে ভেরিয়েবলে জমা রাখে, ঠিক যেমন তুমি ডাকপিয়নের কাছ থেকে চিঠি নাও।"</b></p>
+      <p>নিচের বক্সে "স্ট্যান্ডার্ড ইনপুট" ঘরে একটা সংখ্যা লিখে রান করো, দেখো কম্পিউটার কেমন উত্তর দেয়!</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li><code>scanf()</code> দিয়ে ইউজারের থেকে মান নেওয়া</li>
+          <li><code>&</code> (এড্রেস-অফ) চিহ্নের ব্যবহার</li>
+          <li>ইনপুট নিয়ে হিসাব করে আউটপুট দেখানো</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 সকাল ৮:০০</span><span>৯</span></div></div>
+<div class="page even paper" style="--ac:#3d94e6;--bg:#eef6ff"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">input.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">int</span> main() {
+    <span class="k">int</span> number;
+    printf(<span class="s">&quot;Ekta songkha lekho: &quot;</span>);
+    scanf(<span class="s">&quot;%d&quot;</span>, &amp;number);
+    printf(<span class="s">&quot;Tumi likhecho: %d\n&quot;</span>, number);
+    printf(<span class="s">&quot;Er dwigun holo: %d\n&quot;</span>, number * <span class="n">2</span>);
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ৪</span><span>১০</span></div></div>
+<div class="page odd paper" style="--ac:#3d94e6;--bg:#eef6ff"><div class="head"><div class="emo">🍪</div><div><div class="badge">পর্ব ৫ · সিদ্ধান্ত</div><h2>নাস্তার বিস্কুট ও শর্ত (if-else)</h2></div></div><div class="fit body">
+      <p>আম্মু বললেন, "পরীক্ষায় ৯০-এর বেশি পেলে সোনার মেডেল-বিস্কুট, ৮০-এর বেশি হলে বড় বিস্কুট, নাহলে ছোট বিস্কুট!" রাইয়ান মনে মনে ভাবল, এটাও তো ঠিক কম্পিউটারের মতোই সিদ্ধান্ত নেওয়া!</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"if দিয়ে আমরা শর্ত পরীক্ষা করি — শর্ত সত্যি হলে এক কাজ, মিথ্যা হলে else দিয়ে আরেক কাজ। আর অনেকগুলো শর্ত একসাথে থাকলে else if ব্যবহার করি।"</b></p>
+      <p>রাইয়ান তার স্কোর বসিয়ে দেখল কম্পিউটার ঠিক আম্মুর মতোই বিচার করে বলে দিচ্ছে কোন বিস্কুট তার প্রাপ্য!</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li><code>if</code>, <code>else if</code>, <code>else</code></li>
+          <li>একাধিক শর্ত ধাপে ধাপে পরীক্ষা করা</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 সকাল ৯:০০</span><span>১১</span></div></div>
+<div class="page even paper" style="--ac:#3d94e6;--bg:#eef6ff"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">condition.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">int</span> main() {
+    <span class="k">int</span> score = <span class="n">85</span>;
+
+    <span class="k">if</span> (score &gt;= <span class="n">90</span>) {
+        printf(<span class="s">&quot;Bah! Sonar medal-biscuit!\n&quot;</span>);
+    } <span class="k">else</span> <span class="k">if</span> (score &gt;= <span class="n">80</span>) {
+        printf(<span class="s">&quot;Darun! Boro biscuit!\n&quot;</span>);
+    } <span class="k">else</span> <span class="k">if</span> (score &gt;= <span class="n">60</span>) {
+        printf(<span class="s">&quot;Bhalo hoyeche, choto biscuit!\n&quot;</span>);
+    } <span class="k">else</span> {
+        printf(<span class="s">&quot;Arektu cheshta koro, bondhu!\n&quot;</span>);
+    }
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ৫</span><span>১২</span></div></div>
+<div class="page odd paper" style="--ac:#3d94e6;--bg:#eef6ff"><div class="head"><div class="emo">🎒</div><div><div class="badge">পর্ব ৬ · পথ বাছাই</div><h2>সপ্তাহের দিন ও সুইচ-কেস (switch-case)</h2></div></div><div class="fit body">
+      <p>ক্লাসে ক্যালেন্ডার নিয়ে খেলা হচ্ছিল — কেউ একটা সংখ্যা বললেই বলতে হবে সেটা সপ্তাহের কোন দিন। রাইয়ান ভাবল, if-else দিয়ে করতে গেলে অনেক লাইন লাগবে তো!</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"অনেকগুলো নির্দিষ্ট মান থেকে একটা বেছে নিতে হলে switch-case ব্যবহার করো — এটা একটা ট্রেন স্টেশনের মতো, প্রতিটা case একটা প্ল্যাটফর্ম, আর break মানে ট্রেন থেমে যাওয়া।"</b></p>
+      <p>দুটো কেসকে একসাথে জোড়া দিয়ে (৬ আর ৭ নম্বর) রাইয়ান দেখাল ছুটির দিন কীভাবে একসাথে ধরা যায়।</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li><code>switch</code>, <code>case</code>, <code>break</code>, <code>default</code></li>
+          <li>একাধিক case একসাথে ব্যবহার করা</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 সকাল ১০:০০</span><span>১৩</span></div></div>
+<div class="page even paper" style="--ac:#3d94e6;--bg:#eef6ff"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">switch.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">int</span> main() {
+    <span class="k">int</span> day = <span class="n">2</span>;
+    <span class="k">switch</span> (day) {
+        <span class="k">case</span> <span class="n">1</span>:
+            printf(<span class="s">&quot;Robibar - School khola\n&quot;</span>);
+            <span class="k">break</span>;
+        <span class="k">case</span> <span class="n">2</span>:
+            printf(<span class="s">&quot;Sombar - Onko porikkha!\n&quot;</span>);
+            <span class="k">break</span>;
+        <span class="k">case</span> <span class="n">6</span>:
+        <span class="k">case</span> <span class="n">7</span>:
+            printf(<span class="s">&quot;Chhutir din! Iyeeee!\n&quot;</span>);
+            <span class="k">break</span>;
+        <span class="k">default</span>:
+            printf(<span class="s">&quot;Sadharon school-er din\n&quot;</span>);
+    }
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ৬</span><span>১৪</span></div></div>
+<div class="page odd paper" style="--ac:#6d5ef7;--bg:#f0eeff"><div class="head"><div class="emo">🔁</div><div><div class="badge">পর্ব ৭ · পুনরাবৃত্তি</div><h2>মাঠের দৌড় ও for লুপ</h2></div></div><div class="fit body">
+      <p>টিফিন পিরিয়ডের আগমুহূর্তে স্যার বললেন মাঠে ৫ চক্কর দৌড়াতে হবে। রাইয়ান একই কাজ ৫ বার করতে গিয়ে ভাবল, "এইটা তো একঘেয়ে! কম্পিউটারে নিশ্চয়ই সোজা কোনো উপায় আছে?"</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"for লুপ হলো একটা চাকা — শুরু, শর্ত, আর প্রতিবার একটু বাড়ানো, এই তিনটে জিনিস ঠিক করে দিলেই ও নিজে নিজে ঘুরতে থাকবে!"</b></p>
+      <p>রাইয়ান <code>i</code> নামের একটা গোনা-সংখ্যা দিয়ে ১ থেকে ৫ পর্যন্ত দৌড়ের প্রতিটা চক্করের হিসাব রাখল।</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li><code>for (শুরু; শর্ত; বৃদ্ধি)</code> গঠন</li>
+          <li>লুপ কাউন্টার ভেরিয়েবল</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 সকাল ১১:০০</span><span>১৫</span></div></div>
+<div class="page even paper" style="--ac:#6d5ef7;--bg:#f0eeff"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">forloop.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">int</span> main() {
+    <span class="k">for</span> (<span class="k">int</span> i = <span class="n">1</span>; i &lt;= <span class="n">5</span>; i++) {
+        printf(<span class="s">&quot;Dourer chokkor number: %d\n&quot;</span>, i);
+    }
+    printf(<span class="s">&quot;Rayan hapachche! Total 5 chokkor shesh.\n&quot;</span>);
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ৭</span><span>১৬</span></div></div>
+<div class="page odd paper" style="--ac:#6d5ef7;--bg:#f0eeff"><div class="head"><div class="emo">🍪</div><div><div class="badge">পর্ব ৮ · শর্তে থামা</div><h2>কুকির বাটি ও while লুপ</h2></div></div><div class="fit body">
+      <p>টিফিনে রাইয়ানের বাটিতে ৫টা কুকি ছিল। সে ঠিক করল বাটি খালি না হওয়া পর্যন্ত খেতেই থাকবে — কিন্তু কতবার খাবে সেটা আগে থেকে জানা নেই, শুধু জানে "যতক্ষণ কুকি আছে"।</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"এখানে for লুপ নয়, while লুপ লাগবে — যতক্ষণ শর্ত সত্যি, ততক্ষণ কাজ চলতেই থাকবে। শুরুতে কয়বার হবে তা জানার দরকার নেই।"</b></p>
+      <p>প্রতিবার একটা কুকি খেয়ে রাইয়ান গুনতির সংখ্যা এক করে কমাতে লাগল, যতক্ষণ না বাটি খালি হয়।</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li><code>while (শর্ত) { ... }</code></li>
+          <li>লুপের ভেতরে ভেরিয়েবল আপডেট করা</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 দুপুর ১২:০০</span><span>১৭</span></div></div>
+<div class="page even paper" style="--ac:#6d5ef7;--bg:#f0eeff"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">whileloop.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">int</span> main() {
+    <span class="k">int</span> cookies = <span class="n">5</span>;
+    <span class="k">while</span> (cookies &gt; <span class="n">0</span>) {
+        printf(<span class="s">&quot;Arekta cookie khelam, baki ache: %d\n&quot;</span>, cookies - <span class="n">1</span>);
+        cookies = cookies - <span class="n">1</span>;
+    }
+    printf(<span class="s">&quot;Shob cookie shesh!\n&quot;</span>);
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ৮</span><span>১৮</span></div></div>
+<div class="page odd paper" style="--ac:#6d5ef7;--bg:#f0eeff"><div class="head"><div class="emo">🏀</div><div><div class="badge">পর্ব ৯ · অন্তত একবার</div><h2>বাস্কেটবল ও do-while লুপ</h2></div></div><div class="fit body">
+      <p>খেলার মাঠে রাইয়ান বাস্কেটে বল ঢোকানোর চেষ্টা করছিল। প্রথমবারেই হয়তো ঢুকবে না, কিন্তু একবার তো চেষ্টা করতেই হবে, তারপর দরকার হলে আবার আর আবার।</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"do-while লুপ আগে কাজটা করে, তারপর শর্ত দেখে — মানে অন্তত একবার তো চেষ্টা হবেই, তারপর শর্ত সত্যি থাকলে আবার হবে।"</b></p>
+      <p>রাইয়ান তিনবার চেষ্টা করে অবশেষে বল ঢুকিয়ে "ইয়েএএ!" বলে চিৎকার করল।</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li><code>do { ... } while(শর্ত);</code></li>
+          <li>while আর do-while এর পার্থক্য</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 দুপুর ১:০০</span><span>১৯</span></div></div>
+<div class="page even paper" style="--ac:#6d5ef7;--bg:#f0eeff"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">dowhile.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">int</span> main() {
+    <span class="k">int</span> attempts = <span class="n">0</span>;
+    <span class="k">do</span> {
+        attempts = attempts + <span class="n">1</span>;
+        printf(<span class="s">&quot;Ball chorar cheshta number: %d\n&quot;</span>, attempts);
+    } <span class="k">while</span> (attempts &lt; <span class="n">3</span>);
+    printf(<span class="s">&quot;Obosheshe basket-e ball dhuklo!\n&quot;</span>);
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ৯</span><span>২০</span></div></div>
+<div class="page odd paper" style="--ac:#6d5ef7;--bg:#f0eeff"><div class="head"><div class="emo">🎈</div><div><div class="badge">পর্ব ১০ · থামা ও এড়িয়ে যাওয়া</div><h2>বেলুন ফাটানো ও break-continue</h2></div></div><div class="fit body">
+      <p>স্কুলের অনুষ্ঠানে সারি সারি বেলুন। রাইয়ানকে বলা হলো ১ থেকে ১০ পর্যন্ত বেলুন গুনতে, কিন্তু ৪ নম্বরটা বাদ দিতে হবে (ওটা নষ্ট), আর ৮ নম্বরে পৌঁছালেই থেমে যেতে হবে।</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"continue মানে এই ধাপটা এড়িয়ে পরের ধাপে চলে যাওয়া, আর break মানে পুরো লুপ থেকে বেরিয়েই যাওয়া। দুটো সম্পূর্ণ ভিন্ন কাজ!"</b></p>
+      <p>রাইয়ান দেখল ৪ নম্বর বেলুন গোনায় বাদ পড়ল, আর ৮ নম্বরে পৌঁছেই পুরো গোনাগুনতি থেমে গেল।</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li><code>continue</code> — ধাপ এড়িয়ে যাওয়া</li>
+          <li><code>break</code> — লুপ থেকে বেরিয়ে যাওয়া</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 দুপুর ২:০০</span><span>২১</span></div></div>
+<div class="page even paper" style="--ac:#6d5ef7;--bg:#f0eeff"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">breakcontinue.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">int</span> main() {
+    <span class="k">for</span> (<span class="k">int</span> i = <span class="n">1</span>; i &lt;= <span class="n">10</span>; i++) {
+        <span class="k">if</span> (i == <span class="n">4</span>) {
+            <span class="k">continue</span>;
+        }
+        <span class="k">if</span> (i == <span class="n">8</span>) {
+            <span class="k">break</span>;
+        }
+        printf(<span class="s">&quot;Golapi balloon number: %d\n&quot;</span>, i);
+    }
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ১০</span><span>২২</span></div></div>
+<div class="page odd paper" style="--ac:#ff7a59;--bg:#fff1ec"><div class="head"><div class="emo">🔵</div><div><div class="badge">পর্ব ১১ · সারিবদ্ধ বাক্স</div><h2>মার্বেলের বাক্স ও অ্যারে (Arrays)</h2></div></div><div class="fit body">
+      <p>দুপুরে খেলার সময় রাইয়ানের কাছে ৫ রঙের ৫টা মার্বেল ছিল। প্রতিটার জন্য আলাদা নাম দিতে গেলে (marble1, marble2...) বিরক্তিকর হয়ে যাবে, তাই দাদু একটা কৌশল শেখালেন।</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"অ্যারে হলো একসারি বাক্স, একই নামে কিন্তু নম্বর দিয়ে আলাদা করা — marbles[0], marbles[1], এভাবে। মনে রেখো, গোনা শুরু হয় ০ থেকে!"</b></p>
+      <p>রাইয়ান একটা লুপ দিয়ে সবগুলো বাক্স ঘুরে ঘুরে দেখাল কোন বাক্সে কোন মার্বেল আছে।</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li>অ্যারে ঘোষণা করা: <code>int marbles[5]</code></li>
+          <li>ইনডেক্স দিয়ে মান বের করা (০ থেকে শুরু)</li>
+          <li>লুপ দিয়ে পুরো অ্যারে ঘুরে দেখা</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 দুপুর ৩:০০</span><span>২৩</span></div></div>
+<div class="page even paper" style="--ac:#ff7a59;--bg:#fff1ec"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">array.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">int</span> main() {
+    <span class="k">int</span> marbles[<span class="n">5</span>] = {<span class="n">10</span>, <span class="n">20</span>, <span class="n">30</span>, <span class="n">40</span>, <span class="n">50</span>};
+
+    <span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; <span class="n">5</span>; i++) {
+        printf(<span class="s">&quot;Box number %d e marble ache: %d\n&quot;</span>, i + <span class="n">1</span>, marbles[i]);
+    }
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ১১</span><span>২৪</span></div></div>
+<div class="page odd paper" style="--ac:#ff7a59;--bg:#fff1ec"><div class="head"><div class="emo">🎬</div><div><div class="badge">পর্ব ১২ · সারি ও কলাম</div><h2>সিনেমার সিট ও ২ডি অ্যারে</h2></div></div><div class="fit body">
+      <p>খাওয়ার পর পরিবারসহ সিনেমা হলে যাওয়ার প্ল্যান হলো। সিট বুকিং-এ রাইয়ান দেখল আসনগুলো সারি (row) আর কলাম (column) মিলিয়ে সাজানো — যেন একটা গ্রিড বা টেবিল।</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"একটা অ্যারের ভেতরে আরেকটা অ্যারে রাখলেই ২ডি অ্যারে হয়ে যায় — যেমন সিনেমা হলের সিট চার্ট, প্রথম নম্বর দিয়ে সারি আর দ্বিতীয় নম্বর দিয়ে কলাম বোঝানো হয়।"</b></p>
+      <p>দুটো লুপ একসাথে বসিয়ে (একটা আরেকটার ভেতরে) রাইয়ান পুরো সিট চার্টটাই ছাপিয়ে ফেলল।</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li>২ডি অ্যারে ঘোষণা: <code>int seats[2][3]</code></li>
+          <li>নেস্টেড (একটার ভেতরে আরেকটা) লুপ</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 বিকেল ৪:০০</span><span>২৫</span></div></div>
+<div class="page even paper" style="--ac:#ff7a59;--bg:#fff1ec"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">array2d.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">int</span> main() {
+    <span class="k">int</span> seats[<span class="n">2</span>][<span class="n">3</span>] = {
+        {<span class="n">1</span>, <span class="n">2</span>, <span class="n">3</span>},
+        {<span class="n">4</span>, <span class="n">5</span>, <span class="n">6</span>}
+    };
+
+    <span class="k">for</span> (<span class="k">int</span> row = <span class="n">0</span>; row &lt; <span class="n">2</span>; row++) {
+        <span class="k">for</span> (<span class="k">int</span> col = <span class="n">0</span>; col &lt; <span class="n">3</span>; col++) {
+            printf(<span class="s">&quot;Sari %d, column %d = ason number %d\n&quot;</span>, row, col, seats[row][col]);
+        }
+    }
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ১২</span><span>২৬</span></div></div>
+<div class="page odd paper" style="--ac:#ff7a59;--bg:#fff1ec"><div class="head"><div class="emo">🔤</div><div><div class="badge">পর্ব ১৩ · অক্ষরের সারি</div><h2>নামের ট্যাগ ও স্ট্রিং (Strings)</h2></div></div><div class="fit body">
+      <p>সিনেমা হলে নিজের আর মিনির নামের ট্যাগ বানাতে গিয়ে রাইয়ান বুঝল, নাম তো একটামাত্র char নয়, অনেকগুলো অক্ষর মিলে তৈরি! এই অক্ষরের সারিকেই বলে স্ট্রিং।</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"C-তে স্ট্রিং আসলে char-এর একটা অ্যারে। আর %s ফরম্যাট দিয়ে পুরো নামটাই একসাথে ছাপানো যায়, একটা একটা অক্ষর আলাদা করে লেখা লাগে না।"</b></p>
+      <p>দাদু আরও দেখালেন <code>strlen()</code> নামের একটা যন্ত্র, যা দিয়ে যেকোনো নামের দৈর্ঘ্য (কয়টা অক্ষর) সহজেই বের করা যায়।</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li>char অ্যারে দিয়ে স্ট্রিং বানানো</li>
+          <li><code>%s</code> দিয়ে স্ট্রিং প্রিন্ট করা</li>
+          <li><code>strlen()</code> দিয়ে দৈর্ঘ্য মাপা</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 বিকেল ৪:৩০</span><span>২৭</span></div></div>
+<div class="page even paper" style="--ac:#ff7a59;--bg:#fff1ec"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">string.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+<span class="p">#include &lt;string.h&gt;</span>
+
+<span class="k">int</span> main() {
+    <span class="k">char</span> name[<span class="n">20</span>] = <span class="s">&quot;Rayan&quot;</span>;
+    <span class="k">char</span> pet[<span class="n">20</span>] = <span class="s">&quot;Mini&quot;</span>;
+
+    printf(<span class="s">&quot;Amar naam: %s\n&quot;</span>, name);
+    printf(<span class="s">&quot;Amar biraler naam: %s\n&quot;</span>, pet);
+    printf(<span class="s">&quot;Namer doirgho: %d okkhor\n&quot;</span>, (<span class="k">int</span>)strlen(name));
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ১৩</span><span>২৮</span></div></div>
+<div class="page odd paper" style="--ac:#8b5cf6;--bg:#f5eeff"><div class="head"><div class="emo">🤖</div><div><div class="badge">পর্ব ১৪ · জাদুর যন্ত্র</div><h2>জাদুর মেশিন ও ফাংশন (Functions)</h2></div></div><div class="fit body">
+      <p>বিকেলে বাসায় ফিরে রাইয়ান একটা ছোট্ট "জাদুর মেশিন" বানাতে চাইল, যেখানে দুটো সংখ্যা ঢোকালেই যোগফল বেরিয়ে আসবে। বারবার একই হিসাব না লিখে এই মেশিনটাকে বারবার ব্যবহার করা যাবে।</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"এটাকেই বলে ফাংশন — একটা নাম দেওয়া কাজের প্যাকেট, যাকে দরকার হলেই ডাকা যায়, আর একই কোড বারবার লেখার ঝামেলা থাকে না।"</b></p>
+      <p>রাইয়ান তার মেশিনের নাম দিল <code>jog</code> (মানে যোগ করা), আর সেটাকে দুইবার আলাদা আলাদা সংখ্যা দিয়ে ডেকে দেখাল।</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li>ফাংশন সংজ্ঞায়িত করা (প্যারামিটার ও রিটার্ন টাইপ)</li>
+          <li>ফাংশন কল করা ও ফলাফল ব্যবহার করা</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 বিকেল ৫:০০</span><span>২৯</span></div></div>
+<div class="page even paper" style="--ac:#8b5cf6;--bg:#f5eeff"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">function.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">int</span> jog(<span class="k">int</span> a, <span class="k">int</span> b) {
+    <span class="k">return</span> a + b;
+}
+
+<span class="k">int</span> main() {
+    <span class="k">int</span> result = jog(<span class="n">5</span>, <span class="n">7</span>);
+    printf(<span class="s">&quot;Jogfol: %d\n&quot;</span>, result);
+    printf(<span class="s">&quot;Arekbar: %d\n&quot;</span>, jog(<span class="n">100</span>, <span class="n">23</span>));
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ১৪</span><span>৩০</span></div></div>
+<div class="page odd paper" style="--ac:#8b5cf6;--bg:#f5eeff"><div class="head"><div class="emo">🪞</div><div><div class="badge">পর্ব ১৫ · আয়নার ভেতর আয়না</div><h2>আয়নার প্রতিফলন ও রিকার্সন (Recursion)</h2></div></div><div class="fit body">
+      <p>রাইয়ান আয়নার সামনে দাঁড়িয়ে আরেকটা আয়না ধরল — আর দেখল ভেতরে ভেতরে অসংখ্য প্রতিফলন! দাদু বললেন এটাই একটা দারুণ উদাহরণ কম্পিউটারের একটা জাদুকরী কৌশলের।</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"একটা ফাংশন যখন নিজেকেই আবার ডাকে, তাকে বলে রিকার্সন। যেমন factorial(5) হিসাব করতে factorial(4) লাগে, factorial(4) এর জন্য factorial(3) লাগে — এভাবে ছোট হতে হতে একদম ১ এ থামে।"</b></p>
+      <p>রাইয়ান দেখল ৫! (৫ ফ্যাক্টোরিয়াল) মানে ৫×৪×৩×২×১, আর কম্পিউটার এটা বের করল নিজেকে বারবার ডেকে।</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li>রিকার্সন কী ও কীভাবে কাজ করে</li>
+          <li>থামার শর্ত (base case) কেন জরুরি</li>
+          <li>ফ্যাক্টোরিয়াল হিসাব করা</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 বিকেল ৫:৩০</span><span>৩১</span></div></div>
+<div class="page even paper" style="--ac:#8b5cf6;--bg:#f5eeff"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">recursion.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">int</span> factorial(<span class="k">int</span> n) {
+    <span class="k">if</span> (n &lt;= <span class="n">1</span>) {
+        <span class="k">return</span> <span class="n">1</span>;
+    }
+    <span class="k">return</span> n * factorial(n - <span class="n">1</span>);
+}
+
+<span class="k">int</span> main() {
+    <span class="k">int</span> num = <span class="n">5</span>;
+    printf(<span class="s">&quot;%d! = %d\n&quot;</span>, num, factorial(num));
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ১৫</span><span>৩২</span></div></div>
+<div class="page odd paper" style="--ac:#8b5cf6;--bg:#f5eeff"><div class="head"><div class="emo">🧸</div><div><div class="badge">পর্ব ১৬ · লুকানো ঠিকানা</div><h2>খেলনার ঠিকানা ও পয়েন্টার (Pointers)</h2></div></div><div class="fit body">
+      <p>রাইয়ান তার প্রিয় খেলনাটা আলমারির কোন তাকে আছে, সেই ঠিকানা একটা কাগজে লিখে রাখল। এখন এই কাগজটা যে কাউকে দিলেই সে সরাসরি খেলনাটা খুঁজে বের করতে পারবে!</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"পয়েন্টার হলো ঠিক এই কাগজের মতো — এটা কোনো মান নিজে ধরে রাখে না, বরং মেমোরিতে সেই মান কোথায় আছে, সেই ঠিকানা মনে রাখে। * চিহ্ন দিয়ে সেই ঠিকানায় গিয়ে আসল মান দেখা যায়।"</b></p>
+      <p>রাইয়ান পয়েন্টার দিয়ে দূর থেকেই তার খেলনার মান বদলে ফেলল, ঠিক যেন জাদু!</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li><code>&</code> দিয়ে ঠিকানা বের করা</li>
+          <li><code>*</code> দিয়ে পয়েন্টার ঘোষণা ও ডিরেফারেন্স করা</li>
+          <li>পয়েন্টার দিয়ে আসল ভেরিয়েবলের মান বদলানো</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 সন্ধা ৬:০০</span><span>৩৩</span></div></div>
+<div class="page even paper" style="--ac:#8b5cf6;--bg:#f5eeff"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">pointer.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">int</span> main() {
+    <span class="k">int</span> toy = <span class="n">99</span>;
+    <span class="k">int</span> *ptr = &amp;toy;
+
+    printf(<span class="s">&quot;Khelnar asol maan: %d\n&quot;</span>, toy);
+    printf(<span class="s">&quot;Pointer diye dekha maan: %d\n&quot;</span>, *ptr);
+
+    *ptr = <span class="n">150</span>;
+    printf(<span class="s">&quot;Pointer diye bodlanor por: %d\n&quot;</span>, toy);
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ১৬</span><span>৩৪</span></div></div>
+<div class="page odd paper" style="--ac:#8b5cf6;--bg:#f5eeff"><div class="head"><div class="emo">🤖</div><div><div class="badge">পর্ব ১৭ · পরিচয়পত্র</div><h2>রোবটের পরিচয়পত্র ও স্ট্রাকচার (Structures)</h2></div></div><div class="fit body">
+      <p>রাইয়ানের প্রিয় খেলনা রোবট "চিট্টি"-র একটা নাম আছে, একটা শক্তির মাত্রা আছে। এই দুটো আলাদা জিনিসকে একসাথে জুড়ে একটা পরিচয়পত্র বানানো গেলে কী মজাই না হতো!</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"struct দিয়ে আমরা ভিন্ন ভিন্ন ডেটা টাইপ একসাথে জুড়ে একটা নতুন 'কাস্টম' টাইপ বানাতে পারি — এটাই স্ট্রাকচার, যেন একটা ফর্ম যেখানে নাম আর ক্ষমতা দুটোই থাকে।"</b></p>
+      <p>রাইয়ান তার রোবটের শক্তি ১০ বাড়িয়ে দেখাল কীভাবে স্ট্রাকচারের একটা অংশ (member) বদলানো যায়।</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li><code>struct</code> দিয়ে কাস্টম ডেটা টাইপ বানানো</li>
+          <li>ডট (<code>.</code>) দিয়ে মেম্বার অ্যাক্সেস করা</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 সন্ধা ৬:৩০</span><span>৩৫</span></div></div>
+<div class="page even paper" style="--ac:#8b5cf6;--bg:#f5eeff"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">struct.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">struct</span> Robot {
+    <span class="k">char</span> name[<span class="n">20</span>];
+    <span class="k">int</span> power;
+};
+
+<span class="k">int</span> main() {
+    <span class="k">struct</span> Robot r1 = {<span class="s">&quot;Chitti&quot;</span>, <span class="n">90</span>};
+    printf(<span class="s">&quot;Robot-er naam: %s\n&quot;</span>, r1.name);
+    printf(<span class="s">&quot;Shokti: %d\n&quot;</span>, r1.power);
+    r1.power = r1.power + <span class="n">10</span>;
+    printf(<span class="s">&quot;Notun shokti: %d\n&quot;</span>, r1.power);
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ১৭</span><span>৩৬</span></div></div>
+<div class="page odd paper" style="--ac:#8b5cf6;--bg:#f5eeff"><div class="head"><div class="emo">🔢</div><div><div class="badge">পর্ব ১৮ · নাম-করা সংখ্যা</div><h2>দিনের নাম ও এনাম (Enums)</h2></div></div><div class="fit body">
+      <p>রাইয়ান আবার সপ্তাহের দিনগুলো নিয়ে ভাবছিল, কিন্তু এবার সংখ্যা (0,1,2...) মনে রাখার বদলে দিনগুলোর নামই ব্যবহার করতে চাইল — SUNDAY, MONDAY... এভাবে।</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"enum দিয়ে আমরা কিছু সংখ্যাকে সুন্দর নাম দিতে পারি। ভেতরে ভেতরে এরা এখনও সংখ্যাই (০, ১, ২...), কিন্তু কোডে পড়তে অনেক সহজ হয়ে যায়।"</b></p>
+      <p>রাইয়ান দেখল <code>MONDAY</code> লিখলেই কম্পিউটার বুঝে যায় এটা আসলে সংখ্যা ১।</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li><code>enum</code> দিয়ে নাম-করা ধ্রুবক বানানো</li>
+          <li>এনামের মান তুলনা করা</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 সন্ধা ৭:০০</span><span>৩৭</span></div></div>
+<div class="page even paper" style="--ac:#8b5cf6;--bg:#f5eeff"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">enum.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">enum</span> Day { SUNDAY, MONDAY, TUESDAY, WEDNESDAY };
+
+<span class="k">int</span> main() {
+    <span class="k">enum</span> Day today = MONDAY;
+    printf(<span class="s">&quot;Ajker diner number: %d\n&quot;</span>, today);
+    <span class="k">if</span> (today == MONDAY) {
+        printf(<span class="s">&quot;Aj sombar, school-e jete hobe!\n&quot;</span>);
+    }
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ১৮</span><span>৩৮</span></div></div>
+<div class="page odd paper" style="--ac:#8b5cf6;--bg:#f5eeff"><div class="head"><div class="emo">📦</div><div><div class="badge">পর্ব ১৯ · একই ঘর, ভিন্ন জিনিস</div><h2>যাদুর বাক্স ও ইউনিয়ন (Unions)</h2></div></div><div class="fit body">
+      <p>রাইয়ানের একটা ছোট্ট গোপন বাক্স আছে যেখানে একবার একটা সংখ্যা, আবার একবার একটা অক্ষর রাখা যায় — কিন্তু দুটো একসাথে নয়, একটা সময়ে একটাই!</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"union হলো স্ট্রাকচারের মতোই দেখতে, কিন্তু এখানে সব মেম্বার একই জায়গা (মেমোরি) ভাগাভাগি করে ব্যবহার করে। নতুন কিছু রাখলে আগেরটা হারিয়ে যায়!"</b></p>
+      <p>রাইয়ান প্রথমে বাক্সে একটা সংখ্যা রাখল, পরে সেখানেই একটা অক্ষর রেখে দেখাল আগের সংখ্যাটা আর নেই।</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li><code>union</code> কীভাবে মেমোরি শেয়ার করে</li>
+          <li>struct আর union-এর পার্থক্য</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 রাত ৮:০০</span><span>৩৯</span></div></div>
+<div class="page even paper" style="--ac:#8b5cf6;--bg:#f5eeff"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">union.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">union</span> Box {
+    <span class="k">int</span> number;
+    <span class="k">char</span> letter;
+};
+
+<span class="k">int</span> main() {
+    <span class="k">union</span> Box b;
+    b.number = <span class="n">65</span>;
+    printf(<span class="s">&quot;Box-e songkha rakhlam: %d\n&quot;</span>, b.number);
+    b.letter = &#x27;A&#x27;;
+    printf(<span class="s">&quot;Ebar box-e okkhor rakhlam: %c\n&quot;</span>, b.letter);
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ১৯</span><span>৪০</span></div></div>
+<div class="page odd night" style="--ac:#a78bfa;--bg:#2a2745"><div class="head"><div class="emo">📐</div><div><div class="badge">পর্ব ২০ · খাতার নিয়ম</div><h2>ম্যাজিক নিয়ম ও প্রিপ্রসেসর ম্যাক্রো (#define)</h2></div></div><div class="fit body">
+      <p>সন্ধ্যায় হোমওয়ার্ক করার সময় রাইয়ান একটা নিয়ম বারবার লিখতে লিখতে ক্লান্ত হয়ে গেল — "সর্বোচ্চ ৫টা খেলনা রাখা যাবে"। দাদু বললেন এটার জন্যও শর্টকাট আছে!</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"#define দিয়ে আমরা একটা নাম আগে থেকেই একটা মানের সাথে বেঁধে দিতে পারি। কম্পাইলার কোড পড়ার আগেই এই নামগুলো বদলে আসল মান বসিয়ে দেয়।"</b></p>
+      <p>দাদু আরেকটা মজার জিনিস দেখালেন — SQUARE(x) নামের একটা ম্যাক্রো, যেটা যেকোনো সংখ্যার বর্গ (নিজের সাথে নিজের গুণ) বের করে দেয়।</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li><code>#define</code> দিয়ে ধ্রুবক বানানো</li>
+          <li>প্যারামিটারসহ ম্যাক্রো (ফাংশনের মতো দেখতে)</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 রাত ৯:০০</span><span>৪১</span></div></div>
+<div class="page even night" style="--ac:#a78bfa;--bg:#2a2745"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">macro.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+<span class="p">#define MAX_TOYS 5</span>
+<span class="p">#define SQUARE(x) ((x) * (x))</span>
+
+<span class="k">int</span> main() {
+    printf(<span class="s">&quot;Sorbochcho khelna rakha jabe: %d ti\n&quot;</span>, MAX_TOYS);
+    printf(<span class="s">&quot;4 er borgo: %d\n&quot;</span>, SQUARE(<span class="n">4</span>));
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ২০</span><span>৪২</span></div></div>
+<div class="page odd night" style="--ac:#a78bfa;--bg:#2a2745"><div class="head"><div class="emo">📊</div><div><div class="badge">পর্ব ২১ · মিনি প্রজেক্ট</div><h2>নম্বর সাজানো ও বাবল সর্ট (Bubble Sort)</h2></div></div><div class="fit body">
+      <p>দিনের শেষে ক্লাসের সব বন্ধুর পরীক্ষার নম্বর ছোট থেকে বড় করে সাজাতে হবে। রাইয়ান ভাবল, এতক্ষণ শেখা সব জিনিস — অ্যারে, লুপ, শর্ত — একসাথে ব্যবহার করে এটা করা যায় কি না!</p>
+      <p>🧙🏽‍♂️ দাদু বললেন: <b>"এটাই আসল মজা — বাবল সর্ট অ্যালগরিদমে আমরা পাশাপাশি দুটো সংখ্যা তুলনা করি, বড়টা পেছনে ঠেলে দিই, ঠিক যেমন পানির বুদবুদ উপরে ভেসে ওঠে।"</b></p>
+      <p>রাইয়ান দেখল কীভাবে ছোট ছোট ধাপে ধাপে পুরো তালিকাটাই সাজানো হয়ে যায় — এটাই তার প্রথম "প্রোগ্রাম" যা সত্যিকারের একটা সমস্যা সমাধান করল!</p>
+      <div class="learn-box">
+        <b>🎯 এই পর্বে যা শিখবে:</b>
+        <ul>
+          <li>নেস্টেড লুপ দিয়ে তুলনা ও অদল-বদল (swap)</li>
+          <li>অ্যারে, লুপ ও শর্ত মিলিয়ে একটা ছোট অ্যালগরিদম তৈরি</li>
+        </ul>
+      </div>
+    </div><div class="foot"><span>🕒 রাত ১০:০০</span><span>৪৩</span></div></div>
+<div class="page even night" style="--ac:#a78bfa;--bg:#2a2745"><div class="win"><div class="dots"><span></span><span></span><span></span></div><div class="fn">bubblesort.c</div></div><div class="fit codebox"><pre><span class="p">#include &lt;stdio.h&gt;</span>
+
+<span class="k">int</span> main() {
+    <span class="k">int</span> scores[<span class="n">6</span>] = {<span class="n">45</span>, <span class="n">89</span>, <span class="n">12</span>, <span class="n">67</span>, <span class="n">90</span>, <span class="n">34</span>};
+    <span class="k">int</span> n = <span class="n">6</span>;
+
+    <span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; n - <span class="n">1</span>; i++) {
+        <span class="k">for</span> (<span class="k">int</span> j = <span class="n">0</span>; j &lt; n - i - <span class="n">1</span>; j++) {
+            <span class="k">if</span> (scores[j] &gt; scores[j + <span class="n">1</span>]) {
+                <span class="k">int</span> temp = scores[j];
+                scores[j] = scores[j + <span class="n">1</span>];
+                scores[j + <span class="n">1</span>] = temp;
+            }
+        }
+    }
+
+    printf(<span class="s">&quot;Choto theke boro: &quot;</span>);
+    <span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; n; i++) {
+        printf(<span class="s">&quot;%d &quot;</span>, scores[i]);
+    }
+    printf(<span class="s">&quot;\n&quot;</span>);
+    <span class="k">return</span> <span class="n">0</span>;
+}</pre></div><div class="tip">💡 কোডটা <b>ছোটদের সি কম্পাইলারে</b> চালিয়ে দেখো!</div><div class="foot"><span>অধ্যায় ২১</span><span>৪৪</span></div></div>
+<div class="page odd night" style="--ac:#a78bfa;--bg:#2a2745"><div class="head"><div class="emo">🌙</div><div><div class="badge">সমাপ্তি</div><h2>অনেক রাত হয়ে গেছে রাইয়ান!<br> আজকের কোডিং এখানেই শেষ!</h2></div></div><div class="fit body"><p>রাইয়ান, মিনি আর কোডিং-দাদু জানালার পাশে বসে তারা দেখছে। সকালের "হ্যালো, পৃথিবী!" থেকে শুরু করে রাতের বাবল সর্ট পর্যন্ত — আজ একটামাত্র দিনে C প্রোগ্রামিংয়ের প্রায় সবগুলো বড় ধারণা ঘুরে দেখা হয়ে গেল। দাদু হাসিমুখে বললেন, "এখন থেকে প্রতিটা কোড তোমার কাছে একটা নতুন গল্প!"</p></div><div class="foot"><span>🌙 রাত</span><span>৪৫</span></div></div>
+<div class="page even cert" style=""><div class="certbox"><div class="ct">🏅 সার্টিফিকেট 🏅</div><div class="cn">রাইয়ানের নতুন বন্ধু</div><div class="cs">C প্রোগ্রামিংয়ের ২১টি অধ্যায় সফলভাবে শেষ করার জন্য</div><div class="stars">⭐ 🎉 🏆 🎈 ✨</div></div></div>
+<div class="page odd back" style=""><div class="sun">🌙</div><h1>সমাপ্ত</h1><div class="by">ছোটদের সি বুক · কোডিংয়ের একটি দিন</div><div class="by">github.com/AnisurRahmanJU/C-Book</div></div>
+</div>
+<div id="print"></div>
+<script>
+(function(){
+var PW=520,PH=740,BN='০১২৩৪৫৬৭৮৯',bn=function(n){return String(n).replace(/\d/g,function(d){return BN[d]})};
+var src=[].slice.call(document.querySelectorAll('#src .page')),N=src.length,L=N/2,book=document.getElementById('book'),stage=document.getElementById('stage'),leaves=[],p=0,single=false;
+function fit(){src.forEach(function(pg){var f=pg.querySelector('.fit');if(!f||f.classList.contains('codebox')&&false)return;var fs=parseFloat(getComputedStyle(f).fontSize);f.style.fontSize='';fs=f.classList.contains('codebox')?13.5:f.classList.contains('toc')?14:14.5;f.style.fontSize=fs+'px';while(f.scrollHeight>f.clientHeight+1&&fs>9){fs-=.25;f.style.fontSize=fs+'px'}})}
+function fresh(){book.innerHTML='';leaves=[];for(var i=0;i<L;i++){var lf=document.createElement('div');lf.className='leaf';['front','back'].forEach(function(s,k){var d=document.createElement('div');d.className='face '+s;d.appendChild(src[2*i+k].cloneNode(true));lf.appendChild(d)});book.appendChild(lf);leaves.push(lf)}}
+var Z=1,px=0,py=0,base=1,appEl=document.getElementById('app');
+function apply(){stage.style.transform='translate('+px+'px,'+py+'px) scale('+base*Z+')';appEl.classList.toggle('zoomed',Z>1);document.getElementById('zl').textContent=bn(Math.round(Z*100))+'%'}
+function scale(){var W=innerWidth,H=innerHeight;single=W<780||W/H<1.1;base=Math.min(single?W/(PW+16):W/(2*PW+50),(H-84)/PH);apply()}
+function zoom(z){Z=Math.max(1,Math.min(3,Math.round(z*100)/100));if(Z==1){px=0;py=0}apply()}
+function view(){var s=Math.ceil(p/2);leaves.forEach(function(lf,i){var f=i<s;lf.classList.toggle('flipped',f);lf.style.zIndex=f?i:L-i});
+ var sh=single?(p%2?PW/2:-PW/2):(s==0?-PW/2:s==L?PW/2:0);book.style.transform='translateX('+sh+'px)';
+ document.getElementById('lbl').textContent=p==0?'প্রচ্ছদ':(s==L?'শেষ পাতা':single?'পাতা '+bn(p):bn(2*s-1)+' – '+bn(2*s)+' / '+bn(N-2))}
+function norm(){if(!single){var s=Math.ceil(p/2);p=s>=L?N-1:2*s}}
+function step(d){if(single)p=Math.max(0,Math.min(N-1,p+d));else{var s=Math.max(0,Math.min(L,Math.ceil(p/2)+d));p=s==L?N-1:2*s}view()}
+function go(k){if(single)p=k;else{var s=Math.ceil(k/2);p=s>=L?N-1:2*s}view()}
+document.getElementById('next').onclick=function(){step(1)};document.getElementById('prev').onclick=function(){step(-1)};
+document.getElementById('toc').onclick=function(){go(2)};document.getElementById('pdf').onclick=function(){window.print()};
+var moved=false;
+book.addEventListener('click',function(e){if(moved){moved=false;return}var a=e.target.closest('[data-go]');if(a)go(+a.dataset.go)});
+document.getElementById('zin').onclick=function(){zoom(Z+.25)};document.getElementById('zout').onclick=function(){zoom(Z-.25)};document.getElementById('zreset').onclick=function(){zoom(1)};
+addEventListener('wheel',function(e){if(e.ctrlKey||e.metaKey){e.preventDefault();zoom(Z+(e.deltaY<0?.25:-.25))}else if(Z>1){e.preventDefault();px-=e.deltaX;py-=e.deltaY;apply()}},{passive:false});
+var dr=null;
+appEl.addEventListener('pointerdown',function(e){if(Z>1&&e.button==0){dr={x:e.clientX,y:e.clientY,px:px,py:py};moved=false}});
+addEventListener('pointermove',function(e){if(!dr)return;var dx=e.clientX-dr.x,dy=e.clientY-dr.y;if(!moved&&Math.abs(dx)+Math.abs(dy)<5)return;moved=true;appEl.classList.add('dragging');px=dr.px+dx;py=dr.py+dy;apply()});
+addEventListener('pointerup',function(){dr=null;appEl.classList.remove('dragging')});
+addEventListener('pointercancel',function(){dr=null;appEl.classList.remove('dragging')});
+addEventListener('keydown',function(e){if(e.key=='+'||e.key=='=')zoom(Z+.25);else if(e.key=='-')zoom(Z-.25);else if(e.key=='0')zoom(1)});
+addEventListener('keydown',function(e){if(e.key=='ArrowRight')step(1);else if(e.key=='ArrowLeft')step(-1);else if(e.key=='Home'){p=0;view()}else if(e.key=='End'){p=N-1;view()}});
+var tx=0;addEventListener('touchstart',function(e){tx=e.touches[0].clientX},{passive:true});addEventListener('touchend',function(e){var d=e.changedTouches[0].clientX-tx;if(Z==1&&!moved&&Math.abs(d)>50)step(d<0?1:-1)});
+addEventListener('resize',function(){var o=single;scale();if(o!==single){norm()}view()});
+addEventListener('beforeprint',function(){var pr=document.getElementById('print');pr.innerHTML='';src.forEach(function(pg){pr.appendChild(pg.cloneNode(true))})});
+addEventListener('afterprint',function(){document.getElementById('print').innerHTML=''});
+function init(){fit();fresh();scale();norm();view()}
+init();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){var q=p;init();p=q;view()});
+})();
+
+</script></body></html>
